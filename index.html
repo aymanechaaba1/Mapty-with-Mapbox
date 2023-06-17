@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="src/app.js"></script>
+    <title>Mapty with Mapbox</title>
+  </head>
+  <body>
+    <div id="app" class="flex w-full h-screen">
+      <div class="sidebar basis-1/3 bg-gray-900">
+        <form
+          class="form grid-cols-4 my-10 mx-7 bg-gray-800 rounded-md shadow-sm py-2 px-4 text-white gap-x-4 gap-y-2 hidden"
+        >
+          <label for="type">Type</label>
+          <select
+            name="type"
+            class="type-select bg-gray-400/50 rounded-md text-gray-200 py-1 px-3"
+            id=""
+          >
+            <option value="running">Running</option>
+            <option value="cycling">Cycling</option>
+          </select>
+          <label for="distance">Distance</label>
+          <input
+            type="text"
+            placeholder="km"
+            class="bg-gray-400/50 rounded-md text-gray-200 py-1 px-3 outline-none"
+            name="distance"
+          />
+          <label for="duration">Duration</label>
+          <input
+            type="text"
+            placeholder="min"
+            class="bg-gray-400/50 rounded-md text-gray-200 py-1 px-3 outline-none"
+            name="duration"
+          />
+          <label for="cadence">Cadence</label>
+          <input
+            type="text"
+            placeholder="step/min"
+            class="bg-gray-400/50 rounded-md text-gray-200 py-1 px-3 outline-none"
+            name="cadence"
+          />
+          <label for="elevation_gain" class="hidden">Elevation Gain</label>
+          <input
+            type="text"
+            placeholder="meters"
+            class="bg-gray-400/50 rounded-md text-gray-200 py-1 px-3 outline-none hidden"
+            name="elevation_gain"
+          />
+          <button type="submit"></button>
+        </form>
+
+        <!-- Workouts -->
+        <div
+          class="workouts flex flex-col gap-3 flex-1 overflow-y-scroll mx-5"
+        ></div>
+      </div>
+      <div id="map" class="flex-1"></div>
+    </div>
+  </body>
+</html>
