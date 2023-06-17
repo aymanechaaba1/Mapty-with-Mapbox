@@ -21,7 +21,6 @@ const workoutsContainerEl = document.querySelector('.workouts');
 
 // Config
 const MAPBOX_STYLE = 'outdoors-v11';
-
 mapboxgl.accessToken =
   'pk.eyJ1IjoiYXltYW5lY2hhYWJhMSIsImEiOiJjbGdpMHNrNm4wcjZoM2h0MWozeGcyanZwIn0.cUx85D1sHiOEwkltH8p0UQ';
 
@@ -168,7 +167,7 @@ const addWorkout = (e) => {
     distance: workout.distance,
     cadence: workout.cadence,
     timestamp: Date.now(),
-    ...(elevationGain && { elevationGain }), // Optional property
+    ...(elevationGain && { elevationGain }), // Optional
   });
 
   render(WorkoutEl, workoutsContainerEl);
