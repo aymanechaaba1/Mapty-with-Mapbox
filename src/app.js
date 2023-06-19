@@ -325,3 +325,5 @@ if (navigator.geolocation)
     workoutsContainerEl.addEventListener('click', moveToMarkerHandler);
     workoutsContainerEl.addEventListener('click', removeWorkoutHandler);
   });
+
+//TODO: Get workout obj, get workout index functions (Refactoring)
