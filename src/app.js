@@ -169,14 +169,14 @@ if (navigator.geolocation)
       zoom: 9, // starting zoom
     });
 
-    map.on('click', (e) => {
+    const mapClickHandler = (e) => {
       const { lng, lat } = e.lngLat;
       state.coords = [lng, lat];
       formEl.classList.remove('hidden');
       formEl.classList.add('grid');
-    });
+    };
 
-    formEl.addEventListener('submit', (e) => {
+    const addWorkoutHandler = (e) => {
       e.preventDefault();
 
       const dataArr = [...new FormData(e.target)];
@@ -272,5 +272,25 @@ if (navigator.geolocation)
       // Hide form
       formEl.classList.add('hidden');
       formEl.classList.remove('grid');
-    });
+    };
+
+    const moveToMarkerHandler = (e) => {
+      const workoutEl = e.target.closest('.workout');
+      if (!workoutEl) return;
+
+      // Get workout obj from state
+      const { coords } = state.workouts.find(
+        (workout) => workout.id === +workoutEl.dataset.id
+      );
+
+      // Move to marker
+      map.flyTo({
+        center: coords,
+        essential: true,
+      });
+    };
+
+    map.on('click', mapClickHandler);
+    formEl.addEventListener('submit', addWorkoutHandler);
+    workoutsContainerEl.addEventListener('click', moveToMarkerHandler);
   });
