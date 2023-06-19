@@ -2,18 +2,9 @@
 
 // State
 const state = {
-  workouts: [
-    {
-      id: 23,
-      type: 'running',
-      duration: 2,
-      distance: 2,
-      cadence: 2,
-      timestamp: Date.now(),
-    },
-  ],
+  workouts: [],
   coords: [],
-  currentCoords: [],
+  markers: [],
 };
 
 // DOM
@@ -136,6 +127,22 @@ const Workout = ({
             : ''
         }
       </div>
+      <div class="flex items-center justify-end gap-3">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="remove-workout-btn w-6 h-6 text-gray-300 hover:text-gray-100 cursor-pointer"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+          />
+        </svg>
+      </div>
     </div>
   `;
 };
@@ -217,10 +224,6 @@ if (navigator.geolocation)
       const workoutExist = state.workouts.some(({ id }) => id === workout.id);
       if (workoutExist) return; // LATER: show an error msg
 
-      state.workouts.push(workout);
-
-      console.log(workout);
-
       const WorkoutEl = Workout({
         id: workout.id,
         type: workout.type,
@@ -230,7 +233,6 @@ if (navigator.geolocation)
         cadence: workout.cadence,
         elevationGain: workout.elevationGain,
       });
-
       render(WorkoutEl, workoutsContainerEl);
 
       // Reset form
@@ -269,6 +271,12 @@ if (navigator.geolocation)
         )
         .addTo(map);
 
+      workout = { ...workout, marker };
+
+      state.workouts.push(workout);
+
+      console.log(state.workouts);
+
       // Hide form
       formEl.classList.add('hidden');
       formEl.classList.remove('grid');
@@ -290,7 +298,30 @@ if (navigator.geolocation)
       });
     };
 
+    const removeWorkoutHandler = (e) => {
+      const workoutEl = e.target.closest('.workout');
+      const btnRemove = e.target.closest('.remove-workout-btn');
+      if (!workoutEl || !btnRemove) return;
+
+      // Get workout obj from state
+      const { marker } = state.workouts.find(
+        (workout) => workout.id === +workoutEl.dataset.id
+      );
+
+      const index = state.workouts.findIndex(
+        (workout) => workout.id === +workoutEl.dataset.id
+      );
+
+      if (btnRemove) {
+        state.workouts.splice(index, 1);
+        workoutEl.remove();
+        // Remove marker
+        marker.remove();
+      }
+    };
+
     map.on('click', mapClickHandler);
     formEl.addEventListener('submit', addWorkoutHandler);
     workoutsContainerEl.addEventListener('click', moveToMarkerHandler);
+    workoutsContainerEl.addEventListener('click', removeWorkoutHandler);
   });
