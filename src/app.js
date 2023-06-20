@@ -354,38 +354,39 @@ if (navigator.geolocation) {
       e.target.classList.add('hidden');
     };
 
+    const typeFilterHandler = (e) => {
+      const { value } = e.target;
+
+      if (value === 'all') {
+        const AllWorkouts = getWorkoutsMarkup(state.workouts);
+        clear(workoutsContainerEl);
+        workoutsContainerEl.innerHTML = AllWorkouts;
+      }
+
+      if (value === 'running') {
+        const runningWorkouts = getWorkoutsByType('running');
+        const RunningWorkouts = getWorkoutsMarkup(runningWorkouts);
+
+        clear(workoutsContainerEl);
+        workoutsContainerEl.innerHTML = RunningWorkouts;
+      }
+
+      if (value === 'cycling') {
+        const cyclingWorkouts = getWorkoutsByType('cycling');
+        const CyclingWorkouts = getWorkoutsMarkup(cyclingWorkouts);
+
+        clear(workoutsContainerEl);
+        workoutsContainerEl.innerHTML = CyclingWorkouts;
+      }
+    };
+
     map.on('click', mapClickHandler);
     formEl.addEventListener('submit', addWorkoutHandler);
     workoutsContainerEl.addEventListener('click', moveToMarkerHandler);
     workoutsContainerEl.addEventListener('click', removeWorkoutHandler);
     btnClearWorkoutsEl.addEventListener('click', clearWorkoutsHandler);
+    filterWorkoutsEl.addEventListener('change', typeFilterHandler);
   };
 
   navigator.geolocation.getCurrentPosition(app);
 }
-
-filterWorkoutsEl.addEventListener('change', (e) => {
-  const { value } = e.target;
-
-  if (value === 'all') {
-    const AllWorkouts = getWorkoutsMarkup(state.workouts);
-    clear(workoutsContainerEl);
-    workoutsContainerEl.innerHTML = AllWorkouts;
-  }
-
-  if (value === 'running') {
-    const runningWorkouts = getWorkoutsByType('running');
-    const RunningWorkouts = getWorkoutsMarkup(runningWorkouts);
-
-    clear(workoutsContainerEl);
-    workoutsContainerEl.innerHTML = RunningWorkouts;
-  }
-
-  if (value === 'cycling') {
-    const cyclingWorkouts = getWorkoutsByType('cycling');
-    const CyclingWorkouts = getWorkoutsMarkup(cyclingWorkouts);
-
-    clear(workoutsContainerEl);
-    workoutsContainerEl.innerHTML = CyclingWorkouts;
-  }
-});
