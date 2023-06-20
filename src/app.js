@@ -11,6 +11,7 @@ const state = {
 const formEl = document.querySelector('.form');
 const workoutsContainerEl = document.querySelector('.workouts');
 const btnClearWorkoutsEl = document.querySelector('.btn-clear-workouts');
+const filterWorkoutsEl = document.querySelector('.filter-workouts');
 
 // Config
 const MAPBOX_STYLE = 'streets-v12' || 'dark-v11';
@@ -35,6 +36,24 @@ const toggleFields = (className, ...elements) => {
 const getWorkout = (id) => state.workouts.find((workout) => workout.id === id);
 const getWorkoutIndex = (id) =>
   state.workouts.findIndex((workout) => workout.id === id);
+
+const getWorkoutsByType = (type) =>
+  state.workouts.filter((workout) => workout.type === type);
+
+const getWorkoutsMarkup = (workouts) =>
+  workouts
+    .map((workout) =>
+      Workout({
+        id: workout.id,
+        type: workout.type,
+        duration: workout.duration,
+        distance: workout.distance,
+        cadence: workout.cadence,
+        timestamp: workout.timestamp,
+        elevationGain: workout.elevationGain,
+      })
+    )
+    .join('');
 
 const getJSON = async (url, errMsg = 'Something went wrong.') => {
   try {
@@ -170,8 +189,8 @@ const Workouts = state.workouts
 // Init
 
 // Get current location
-if (navigator.geolocation)
-  navigator.geolocation.getCurrentPosition((pos) => {
+if (navigator.geolocation) {
+  const app = (pos) => {
     const { latitude: lat, longitude: lng } = pos.coords;
 
     const map = new mapboxgl.Map({
@@ -340,4 +359,33 @@ if (navigator.geolocation)
     workoutsContainerEl.addEventListener('click', moveToMarkerHandler);
     workoutsContainerEl.addEventListener('click', removeWorkoutHandler);
     btnClearWorkoutsEl.addEventListener('click', clearWorkoutsHandler);
-  });
+  };
+
+  navigator.geolocation.getCurrentPosition(app);
+}
+
+filterWorkoutsEl.addEventListener('change', (e) => {
+  const { value } = e.target;
+
+  if (value === 'all') {
+    const AllWorkouts = getWorkoutsMarkup(state.workouts);
+    clear(workoutsContainerEl);
+    workoutsContainerEl.innerHTML = AllWorkouts;
+  }
+
+  if (value === 'running') {
+    const runningWorkouts = getWorkoutsByType('running');
+    const RunningWorkouts = getWorkoutsMarkup(runningWorkouts);
+
+    clear(workoutsContainerEl);
+    workoutsContainerEl.innerHTML = RunningWorkouts;
+  }
+
+  if (value === 'cycling') {
+    const cyclingWorkouts = getWorkoutsByType('cycling');
+    const CyclingWorkouts = getWorkoutsMarkup(cyclingWorkouts);
+
+    clear(workoutsContainerEl);
+    workoutsContainerEl.innerHTML = CyclingWorkouts;
+  }
+});

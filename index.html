@@ -64,6 +64,16 @@
         </form>
 
         <!-- Workouts -->
+
+        <select
+          name="filter"
+          id=""
+          class="filter-workouts bg-gray-800/50 text-white rounded-md shadow-sm py-3 px-6 border-gray-500 focus:outline-none"
+        >
+          <option value="all">All</option>
+          <option value="running">Running</option>
+          <option value="cycling">Cycling</option>
+        </select>
         <div class="workouts flex flex-col gap-3 flex-1 overflow-scroll"></div>
         <button
           class="btn btn-clear-workouts py-2 px-4 rounded-md bg-gray-800/50 shadow-sm text-white uppercase hidden"
