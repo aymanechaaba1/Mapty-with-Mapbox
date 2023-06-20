@@ -10,6 +10,7 @@ const state = {
 // DOM
 const formEl = document.querySelector('.form');
 const workoutsContainerEl = document.querySelector('.workouts');
+const btnClearWorkoutsEl = document.querySelector('.btn-clear-workouts');
 
 // Config
 const MAPBOX_STYLE = 'streets-v12' || 'dark-v11';
@@ -30,6 +31,10 @@ const toggleFields = (className, ...elements) => {
     el.classList.toggle(className);
   });
 };
+
+const getWorkout = (id) => state.workouts.find((workout) => workout.id === id);
+const getWorkoutIndex = (id) =>
+  state.workouts.findIndex((workout) => workout.id === id);
 
 const getJSON = async (url, errMsg = 'Something went wrong.') => {
   try {
@@ -280,6 +285,9 @@ if (navigator.geolocation)
       // Hide form
       formEl.classList.add('hidden');
       formEl.classList.remove('grid');
+
+      // show clear btn
+      btnClearWorkoutsEl.classList.remove('hidden');
     };
 
     const moveToMarkerHandler = (e) => {
@@ -287,9 +295,7 @@ if (navigator.geolocation)
       if (!workoutEl) return;
 
       // Get workout obj from state
-      const { coords } = state.workouts.find(
-        (workout) => workout.id === +workoutEl.dataset.id
-      );
+      const { coords } = getWorkout(+workoutEl.dataset.id);
 
       // Move to marker
       map.flyTo({
@@ -304,13 +310,8 @@ if (navigator.geolocation)
       if (!workoutEl || !btnRemove) return;
 
       // Get workout obj from state
-      const { marker } = state.workouts.find(
-        (workout) => workout.id === +workoutEl.dataset.id
-      );
-
-      const index = state.workouts.findIndex(
-        (workout) => workout.id === +workoutEl.dataset.id
-      );
+      const { marker } = getWorkout(+workoutEl.dataset.id);
+      const index = getWorkoutIndex(+workoutEl.dataset.id);
 
       if (btnRemove) {
         state.workouts.splice(index, 1);
@@ -320,10 +321,23 @@ if (navigator.geolocation)
       }
     };
 
+    const clearWorkoutsHandler = (e) => {
+      // Remove all markers
+      state.workouts.forEach((workout) => {
+        workout.marker.remove();
+      });
+
+      state.workouts = [];
+
+      workoutsContainerEl.innerHTML = '';
+
+      // Hide btn clear
+      e.target.classList.add('hidden');
+    };
+
     map.on('click', mapClickHandler);
     formEl.addEventListener('submit', addWorkoutHandler);
     workoutsContainerEl.addEventListener('click', moveToMarkerHandler);
     workoutsContainerEl.addEventListener('click', removeWorkoutHandler);
+    btnClearWorkoutsEl.addEventListener('click', clearWorkoutsHandler);
   });
-
-//TODO: Get workout obj, get workout index functions (Refactoring)
