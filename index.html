@@ -64,16 +64,52 @@
         </form>
 
         <!-- Workouts -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-5">
+            <select
+              name="filter"
+              id=""
+              class="flex-1 filter-workouts bg-gray-800/50 text-white rounded-md shadow-sm py-3 px-6 border-gray-500 focus:outline-none"
+            >
+              <option value="all">All</option>
+              <option value="running">Running</option>
+              <option value="cycling">Cycling</option>
+            </select>
+            <button
+              class="btn btn-sort btn-sort-workouts flex items-center justify-center p-3 bg-gray-800/50 rounded-md shadow-sm"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6 text-white"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"
+                />
+              </svg>
+            </button>
+          </div>
+          <div
+            class="dropdown dropdown-menu dropdown-menu-sort float-right hidden"
+          >
+            <div
+              class="btn-sort-workouts-by-distance text-white bg-gray-800 hover:bg-gray-700 py-2 px-4 cursor-pointer rounded-t-md"
+            >
+              By Distance
+            </div>
+            <div
+              class="btn-sort-workouts-by-duration text-white bg-gray-800 hover:bg-gray-700 py-2 px-4 cursor-pointer rounded-b-md"
+            >
+              By Duration
+            </div>
+          </div>
+        </div>
 
-        <select
-          name="filter"
-          id=""
-          class="filter-workouts bg-gray-800/50 text-white rounded-md shadow-sm py-3 px-6 border-gray-500 focus:outline-none"
-        >
-          <option value="all">All</option>
-          <option value="running">Running</option>
-          <option value="cycling">Cycling</option>
-        </select>
         <div class="workouts flex flex-col gap-3 flex-1 overflow-scroll"></div>
         <button
           class="btn btn-clear-workouts py-2 px-4 rounded-md bg-gray-800/50 shadow-sm text-white uppercase hidden"

@@ -12,6 +12,8 @@ const formEl = document.querySelector('.form');
 const workoutsContainerEl = document.querySelector('.workouts');
 const btnClearWorkoutsEl = document.querySelector('.btn-clear-workouts');
 const filterWorkoutsEl = document.querySelector('.filter-workouts');
+const btnSortWorkoutsEl = document.querySelector('.btn-sort-workouts');
+const dropdownMenuSortEl = document.querySelector('.dropdown-menu-sort');
 
 // Config
 const MAPBOX_STYLE = 'streets-v12' || 'dark-v11';
@@ -380,12 +382,43 @@ if (navigator.geolocation) {
       }
     };
 
+    const toggleDropdownMenuSortHandler = (e) => {
+      dropdownMenuSortEl.classList.toggle('hidden');
+    };
+
+    const sortWorkoutsHandler = (e) => {
+      const btnSortByDistance = e.target.closest(
+        '.btn-sort-workouts-by-distance'
+      );
+      const btnSortByDuration = e.target.closest(
+        '.btn-sort-workouts-by-duration'
+      );
+
+      if (state.workouts.length === 0) return;
+
+      const sortByProperty = (state, property) => {
+        const sortedWorkouts = state.workouts
+          .slice()
+          .sort((a, b) => b[property] - a[property]);
+        const WorkoutsMarkup = getWorkoutsMarkup(sortedWorkouts);
+
+        clear(workoutsContainerEl);
+        workoutsContainerEl.innerHTML = WorkoutsMarkup;
+      };
+
+      btnSortByDistance && sortByProperty(state, 'distance');
+
+      btnSortByDuration && sortByProperty(state, 'duration');
+    };
+
     map.on('click', mapClickHandler);
     formEl.addEventListener('submit', addWorkoutHandler);
     workoutsContainerEl.addEventListener('click', moveToMarkerHandler);
     workoutsContainerEl.addEventListener('click', removeWorkoutHandler);
     btnClearWorkoutsEl.addEventListener('click', clearWorkoutsHandler);
     filterWorkoutsEl.addEventListener('change', typeFilterHandler);
+    btnSortWorkoutsEl.addEventListener('click', toggleDropdownMenuSortHandler);
+    dropdownMenuSortEl.addEventListener('click', sortWorkoutsHandler);
   };
 
   navigator.geolocation.getCurrentPosition(app);
