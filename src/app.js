@@ -57,6 +57,23 @@ const getWorkoutsMarkup = (workouts) =>
     )
     .join('');
 
+const createToastNotification = ({ text, className = '' }) => {
+  Toastify({
+    text,
+    duration: 3000,
+    className,
+    style: {
+      background: 'white',
+    },
+    newWindow: true,
+    close: false,
+    gravity: 'top', // `top` or `bottom`
+    position: 'center', // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    onClick: function () {}, // Callback after click
+  }).showToast();
+};
+
 const getJSON = async (url, errMsg = 'Something went wrong.') => {
   try {
     const res = await fetch(url);
@@ -212,6 +229,9 @@ if (navigator.geolocation) {
     const addWorkoutHandler = (e) => {
       e.preventDefault();
 
+      const areValid = (...vals) =>
+        vals.every((val) => isFinite(val) && +val > 0);
+
       const dataArr = [...new FormData(e.target)];
       const data = Object.fromEntries(dataArr);
 
@@ -222,6 +242,15 @@ if (navigator.geolocation) {
         cadence,
         elevation_gain: elevationGain,
       } = data;
+
+      // Form validation
+      if (!areValid(distance, duration, cadence)) {
+        createToastNotification({
+          text: 'Values must be positive numbers',
+          className: 'text-red-900 font-medium shadow-md rounded-md',
+        });
+        return;
+      }
 
       let workout = {
         id: Math.floor(Math.random() * 100) + 1,
